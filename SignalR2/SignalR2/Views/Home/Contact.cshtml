@@ -3,65 +3,122 @@
 }
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
+<div class="col-md-6">
+    <canvas id="canvas" width="500" height="300"
+            style="border: 1px gainsboro dashed"></canvas>
 
-<canvas id="canvas" width="500" height="300"
-        style="border: 1px gainsboro dashed"></canvas>
-<input type="button" class="btn btn-danger "
-       id="clear-btn" value="Clear" />
-@section scripts
+    <input type="button" class="btn btn-danger "
+           id="clear-btn" value="Clear" />
+</div>
+    <div class="col-md-6">
+        Number of connected clients:
+        <input type="button" class="btn btn-success" value="1" id="numberUsers"/>
+        <br/><br/>
+        Logs:
+        <table id="users" class="table table-striped logs">
+            <thead>
+                <tr>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                    <th>
+                        IdConnection
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    @section scripts
 {
 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.6/fabric.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.6/fabric.min.js"></script>
 
-    <script>
-        var drawPath;
-        var initialiseCanvas = function () {
+        <script>
+            var drawPath;
+            var hub = $.connection.puns;
 
-            document.puneCanvas = new fabric.Canvas('canvas');
+            var initialiseCanvas = function () {
+                document.puneCanvas = new fabric.Canvas('canvas');
 
-            document.puneCanvas.isDrawingMode = true;
+                document.puneCanvas.isDrawingMode = true;
 
-            var pathCreated = function (e) {
-                console.log(e.path);
-                $.connection.puns.server
-                    .sendPath(JSON.stringify(e.path));
-            };
-            document.puneCanvas.loadPath = pathCreated;
-            document.puneCanvas.on({
-                'path:created': pathCreated
-            });
-
-
-            $("#clear-btn").click(function () {
-                $.connection.puns.server.clear();
-            });
-
-
-        }
-
-        drawPath = function (pathString) {
-            var path = JSON.parse(pathString);
-            fabric.util.enlivenObjects([path], function (objects) {
-                objects.forEach(function (o) {
-                    document.puneCanvas.add(o);
+                var pathCreated = function (e) {
+                    //console.log(e.path);
+                    hub.server
+                        .sendPath(JSON.stringify(e.path));
+                };
+                document.puneCanvas.loadPath = pathCreated;
+                document.puneCanvas.on({
+                    'path:created': pathCreated
                 });
-            });
-        }
 
-        $.connection.puns.client.clear = function () {
-            document.puneCanvas.clear();
-        }
 
-        $.connection.puns.client.loadImage = function (paths) {
-            initialiseCanvas();
-            for (var i = 0; i < paths.length; i++) {
-                drawPath(paths[i]);
+                $("#clear-btn").click(function () {
+                    hub.server.clear();
+                });
+
+
             }
-        }
 
-        $.connection.puns.client.drawPath = drawPath;
-        $.connection.hub.start();
+            addLog = function(data, action, id) {
+
+                var table = document.getElementById("users").getElementsByTagName('tbody')[0];
+                var row = table.insertRow(0);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                cell1.innerHTML = data;
+                cell2.innerHTML = action;
+                cell3.innerHTML = id;
+            }
+
+            drawPath = function (pathString) {
+                var path = JSON.parse(pathString);
+                fabric.util.enlivenObjects([path], function (objects) {
+                    objects.forEach(function (o) {
+                        document.puneCanvas.add(o);
+                    });
+                });
+            }
+
+            hub.client.ipclient = function (msg) {
+                console.log(msg);
+            }
+
+            hub.client.clear = function () {
+                document.puneCanvas.clear();
+            }
+
+            hub.client.loadImage = function (paths) {
+                initialiseCanvas();
+                for (var i = 0; i < paths.length; i++) {
+                    drawPath(paths[i]);
+                }
+            }
+
+            hub.client.NumberOfUsers = function (amount) {
+                document.getElementById("numberUsers").value = amount;
+            }
+
+            hub.client.users = function (users) {
+                console.log(users);
+            }
+
+            hub.client.action = function(data, type, user) {
+                addLog(data, type, user);
+            }
+
+            hub.client.drawPath = drawPath;
+            $.connection.hub.start();
 
 
-    </script>
-}
+
+        </script>
+    }
