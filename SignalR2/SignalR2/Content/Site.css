@@ -22,3 +22,38 @@ select,
 textarea {
     max-width: 280px;
 }
+
+        .logs table {
+            width: 100%;
+        }
+
+        .logs thead, tbody, tr, td, th { display: block; }
+
+        .logs tr:after {
+            content: ' ';
+            display: block;
+            visibility: hidden;
+            clear: both;
+        }
+
+        .logs thead th {
+            height: 50px;
+
+            /*text-align: left;*/
+        }
+
+        .logs tbody {
+            height:500px;
+            overflow-y: auto;
+        }
+
+        .logs thead {
+            /* fallback */
+        }
+
+
+        .logs tbody td, thead th {
+            width: 33%;
+            height: 50px;
+            float: left;
+        }
