@@ -4,10 +4,27 @@
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
-<canvas id="canvas" width="500" height="300"
-        style="border: 1px gainsboro dashed"></canvas>
-<input type="button" class="btn btn-danger "
-       id="clear-btn" value="Clear" />
+<div class="row">
+    <div class="col-md-6">
+        <h2>Liczba rysowników: <span id="count-clients">0</span></h2>
+        <canvas id="canvas" width="500" height="300"
+                style="border: 1px gainsboro dashed"></canvas>
+        <input type="button" class="btn btn-danger "
+               id="clear-btn" value="Clear" />
+    </div>
+    <div class="col-md-5">
+        <h2>Historia zmian</h2>
+        <table id="table" class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Login</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
 @section scripts
 {
 
@@ -58,6 +75,19 @@
                 drawPath(paths[i]);
             }
         }
+        $.connection.puns.client.updateNumberOfPeople = function (numberOfClients) {
+            $("#count-clients").text(numberOfClients);
+        }
+        $.connection.puns.client.log = function (name, date) {
+            console.log(name + " narysował o: " + new Date());
+            if ($("#table").height() >= $("#canvas").height()) {
+                removeTable();
+            }
+            $("<tr><td>" + name + "</td><td>" + date + "</td></tr>").prependTo("#table > tbody");
+        }
+        var removeTable = function () {
+            $("#table tbody tr").remove();
+        };
 
         $.connection.puns.client.drawPath = drawPath;
         $.connection.hub.start();
