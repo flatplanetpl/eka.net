@@ -9,28 +9,14 @@ using Microsoft.AspNet.SignalR.Hubs;
 namespace SignalR2.Hubs
 {
     [HubName("chat")]
+    [Authorize()]
     public class ChatHub : Hub<IClientHandler>
     {
-        [Authorize()]
+
         public void SendToAll(string msg)
         {
-            Clients.Others.Hello(msg);
-        }
 
-        public override Task OnConnected()
-        {
-            this.Clients.Caller.Hello("Hello from server!");
-            return base.OnConnected();
-        }
-
-        public override Task OnReconnected()
-        {
-            return base.OnReconnected();
-        }
-
-        public override Task OnDisconnected(bool stopCalled)
-        {
-            return base.OnDisconnected(stopCalled);
+            Clients.All.Hello(HttpContext.Current.User.Identity.Name + " napisał: \n" + msg);
         }
     }
 
