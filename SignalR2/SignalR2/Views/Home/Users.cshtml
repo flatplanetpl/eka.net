@@ -1,0 +1,33 @@
+﻿@using SignalR2.Hubs
+@{
+    ViewBag.Title = "Users";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<div id="usr-num"></div>
+<div ></div>
+
+
+@section scripts {
+
+    <script>
+        
+        $(function () {
+  
+            $.connection.chat.client.online = function (count) {
+    
+                $('#usr-num').text("Number of connected users: " + count);
+
+            };
+
+            $.connection.hub.start();
+        });
+
+
+    </script>
+    
+
+}
+
+
