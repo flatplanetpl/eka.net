@@ -51,10 +51,11 @@
         });
 
 
-        $("#send-btn").click(function() {
-            var msg = $("#msg-input").val();
-            $.connection.chat.server.sendToAll(msg);
-            $("#msg-input").val("");
-        })
+        $("#send-btn")
+            .click(function () {
+                var msg = $("#msg-input").val();
+                $.connection.chat.server.sendToAll(msg);
+                $("#msg-input").val("");
+            });
     </script>
 }

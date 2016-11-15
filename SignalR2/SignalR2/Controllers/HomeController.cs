@@ -26,5 +26,12 @@ namespace SignalR2.Controllers
 
             return View();
         }
+
+        public ActionResult Users()
+        {
+            ViewBag.Message = "This section provides information about connected users.";
+
+            return View();
+        }
     }
 }
