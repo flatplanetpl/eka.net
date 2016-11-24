@@ -35,26 +35,38 @@
         </p>
     </div>
 </div>
-<input type="text" id="msg-input"/>
-<input type="button" class="btn btn-danger " 
-       id="send-btn" value="Send"/>
+<div class="col-md-12">
+    Liczba podłączonych użytkowników : <span id="numberOfUsers">0</span>
+    <textarea id="showText" class="form-control" style="height: 200px"></textarea>
+    <input type="text" class="form-control form-inline" id="msg-input" />
+    <input type="button" class="btn btn-danger "
+           id="send-btn" value="Send" />
+    <input type="hidden" id="displayname" />
+</div>
 @section scripts
 {
     <script type="text/javascript">
 
-        $.connection.chat.client.hello = function (msg) {
-            console.log(msg);
-        }
+            $.connection.chat.client.showMessage = function (msg) {
+                $("#showText").append(msg);
+                console.log(msg);
+            }
 
-        $.connection.hub.start().then(function () {
-            console.log("Connected!:)");
-        });
+            $.connection.hub.start().then(function () {
+                console.log("Connected!:)");
+            });
 
 
-        $("#send-btn").click(function() {
-            var msg = $("#msg-input").val();
-            $.connection.chat.server.sendToAll(msg);
-            $("#msg-input").val("");
-        })
+            $.connection.chat.client.updateNumberOfClients = function (number) {
+                $('#numberOfUsers').text(number);
+            }
+
+            $('#displayname').val(prompt('Enter your name:', ''));
+            $("#send-btn").click(function() {
+                var msg = $("#msg-input").val();
+                $.connection.chat.server.sendToAll($('#displayname').val() + ": " + msg + "\n");
+                $("#msg-input").val("");
+            });
+
     </script>
 }
