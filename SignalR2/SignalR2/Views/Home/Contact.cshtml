@@ -8,12 +8,29 @@
         style="border: 1px gainsboro dashed"></canvas>
 <input type="button" class="btn btn-danger "
        id="clear-btn" value="Clear" />
+<div>
+    <button type="button" onclick="changeColor('#3ff206')">zielony</button>
+    <button type="button" onclick="changeColor('#f10714')">czerwony</button>
+    <button type="button" onclick="changeColor('#4169e1')">niebieski</button>
+    <button type="submit" onclick="changeColor('#ffb6c1')">rozowy</button>
+</div>
+<div>
+    <input type="number" id="numberWidth" />
+    <button type="button" onclick="changeWidth()">zmien</button>
+</div>
+
 @section scripts
 {
 
     <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.6/fabric.min.js"></script>
 
     <script>
+        function changeWidth() {
+            document.puneCanvas.freeDrawingBrush.width = $('#numberWidth').val();
+        }
+        function changeColor(color) {
+            document.puneCanvas.freeDrawingBrush.color = color;
+        }
         var drawPath;
         var initialiseCanvas = function () {
 

@@ -11,7 +11,7 @@ namespace SignalR2.Hubs
     [HubName("puns")]
     public class PunsHub : Hub<IPunsClientHandler>
     {
-        static List<string> Image =new List<string>();
+        static List<string> Image = new List<string>();
 
         public override Task OnConnected()
         {
