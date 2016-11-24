@@ -8,20 +8,27 @@
         style="border: 1px gainsboro dashed"></canvas>
 <input type="button" class="btn btn-danger "
        id="clear-btn" value="Clear" />
+<h1>Jako ostatni malował: </h1>
+<h2 id="last_painted_person"></h2>
 @section scripts
 {
 
     <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.6/fabric.min.js"></script>
 
-    <script>
+<script type="text/javascript">
+
+    $.connection.puns.client.who = function (name) {
+            var element = document.getElementById("last_painted_person");
+            element.innerHTML = name;
+        }
         var drawPath;
-        var initialiseCanvas = function () {
+        var initialiseCanvas = function() {
 
             document.puneCanvas = new fabric.Canvas('canvas');
 
             document.puneCanvas.isDrawingMode = true;
 
-            var pathCreated = function (e) {
+            var pathCreated = function(e) {
                 console.log(e.path);
                 $.connection.puns.server
                     .sendPath(JSON.stringify(e.path));
@@ -32,27 +39,29 @@
             });
 
 
-            $("#clear-btn").click(function () {
-                $.connection.puns.server.clear();
-            });
-
-
-        }
-
-        drawPath = function (pathString) {
-            var path = JSON.parse(pathString);
-            fabric.util.enlivenObjects([path], function (objects) {
-                objects.forEach(function (o) {
-                    document.puneCanvas.add(o);
+            $("#clear-btn")
+                .click(function() {
+                    $.connection.puns.server.clear();
                 });
-            });
+
+
         }
 
-        $.connection.puns.client.clear = function () {
+        drawPath = function(pathString) {
+            var path = JSON.parse(pathString);
+            fabric.util.enlivenObjects([path],
+                function(objects) {
+                    objects.forEach(function(o) {
+                        document.puneCanvas.add(o);
+                    });
+                });
+        }
+
+        $.connection.puns.client.clear = function() {
             document.puneCanvas.clear();
         }
 
-        $.connection.puns.client.loadImage = function (paths) {
+        $.connection.puns.client.loadImage = function(paths) {
             initialiseCanvas();
             for (var i = 0; i < paths.length; i++) {
                 drawPath(paths[i]);
@@ -63,5 +72,5 @@
         $.connection.hub.start();
 
 
-    </script>
+</script>
 }

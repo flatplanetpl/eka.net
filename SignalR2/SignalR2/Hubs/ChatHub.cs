@@ -19,7 +19,7 @@ namespace SignalR2.Hubs
 
         public override Task OnConnected()
         {
-            this.Clients.Caller.Hello("Hello from server!");
+            this.Clients.Caller.Hello("Hello from serverek!");
             return base.OnConnected();
         }
 
